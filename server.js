@@ -20,4 +20,4 @@ app.use(function(req, res, next) {
 var api_calls = require('./api_calls');
 api_calls(app);
 
-app.listen(4000);
+app.listen(process.env.PORT || 4000);
