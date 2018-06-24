@@ -5,6 +5,17 @@ const client = yelp.client(YELP_API_KEY);
 function api_calls(app) {
   app.get('/api/search', searchBusinesses);
   app.get('/api/business/:id/photos', searchPhotosForBusiness);
+  app.get('/api/business/:id', searchBusinessById)
+}
+
+function searchBusinessById(req, res) {
+  let id = req.params['id'];
+
+  client.business(id)
+    .then(response => {
+      res.json(response.jsonBody);
+    })
+    .catch(e => res.send(e));
 }
 
 function searchBusinesses(req, res) {
@@ -29,7 +40,10 @@ function searchPhotosForBusiness(req, res) {
 
   client.business(id)
     .then(response => {
-      res.json(response.jsonBody.photos);
+      let photos = response.jsonBody.photos.map(photo => {
+        return {src: photo, businessId: id};
+      });
+      res.json(photos);
     })
     .catch(e => {
       console.log("searchYelp");
